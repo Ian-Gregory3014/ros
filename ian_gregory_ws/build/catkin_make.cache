@@ -1,0 +1,2 @@
+f1tenth_simulator:ian_gregory_roslab
+-DCATKIN_DEVEL_PREFIX=/home/gary/ian_gregory_ws/devel -DCMAKE_INSTALL_PREFIX=/home/gary/ian_gregory_ws/install -G Unix Makefiles

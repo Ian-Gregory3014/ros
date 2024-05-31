@@ -1,0 +1,44 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <arg name="racecar_version" default="racecar-v2" />
+  <arg name="run_camera" default="false"/>
+  <arg name="bag_record" default="true" />
+  <arg name="bag_file" default="$(find group6)/data/safety_node_session" />
+
+  <!-- Namespace group for VESC related components -->
+  <group ns="vesc">
+    <!-- Include MUX setup -->
+    <include file="$(find racecar)/launch/mux.launch" />
+
+    <!-- Include electronic speed controller driver setup -->
+    <include file="$(find racecar)/launch/includes/$(arg racecar_version)/vesc.launch.xml">
+      <arg name="racecar_version" value="$(arg racecar_version)" />
+    </include>
+  </group>
+
+  <!-- Include sensors (IMU, laser scanner) -->
+  <include file="$(find racecar)/launch/includes/common/sensors.launch.xml">
+    <arg name="racecar_version" value="$(arg racecar_version)" />
+  </include>
+
+  <!-- Include static transformations (e.g., base_link to imu) -->
+  <include file="$(find racecar)/launch/includes/$(arg racecar_version)/static_transforms.launch.xml" />
+
+
+  <!-- Node for running the Safety node -->
+  <node name="safety_node" pkg="ian_gregory_roslab" type="safety_node.py" output="screen">
+  </node>
+
+  <!-- Node for running the Wall Follow node 
+   <node name="wall_follow_node" pkg="ian_gregory_roslab" type="wall_follow.py" output="screen">
+  </node>
+
+  <group if="$(arg bag_record)">
+   <node name="record_wall_distance" pkg="rosbag" type="record" args="-o $(arg bag_file) /wall_distance /desired_distance /vesc/odom /minimum_ttc" output="screen">
+    </node>
+  </group>-->
+
+  <node name="reactive_follow_gap_node" pkg="ian_gregory_roslab" type="gap_follow.py" output="screen"/>
+
+
+</launch>
